@@ -1,13 +1,13 @@
-package com.nexon.jsonparser.lexer;
+package com.nexon.jsonparser.divide;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import com.nexon.jsonparser.bean.CToken;
+import com.nexon.jsonparser.bean.WrappedToken;
 
-public class SimpleLexer {
+public class Divisor {
 
-	public SimpleLexer() {
+	public Divisor() {
 	}
 
 	public int whichToken(Object obj) {
@@ -15,23 +15,23 @@ public class SimpleLexer {
 		Matcher m = primitiveValue.matcher(String.valueOf(obj));
 
 		if (m.find())
-			return CToken.PRIMITIVE_VALUE;
+			return WrappedToken.PRIMITIVE_VALUE;
 		
 		switch (String.valueOf(obj)) {
 			case "{":
-				return CToken.LEFT_BRACE;
+				return WrappedToken.LEFT_BRACE;
 			case "}":
-				return CToken.RIGHT_BRACE;
+				return WrappedToken.RIGHT_BRACE;
 			case "[":
-				return CToken.LEFT_SQUARE;
+				return WrappedToken.LEFT_SQUARE;
 			case "]":
-				return CToken.RIGHT_SQUARE;
+				return WrappedToken.RIGHT_SQUARE;
 			case ",":
-				return CToken.COMMA;
+				return WrappedToken.COMMA;
 			case ":":
-				return CToken.COLON;
+				return WrappedToken.COLON;
 			case "\"":
-				return CToken.QUOTE;
+				return WrappedToken.QUOTE;
 			default:
 				return -1;
 		}

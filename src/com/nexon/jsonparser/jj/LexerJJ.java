@@ -143,7 +143,7 @@ public class LexerJJ implements LexerJJConstants {
 	}
 
 	/** Get the next Token. */
-	static final public Token getNextToken() {
+	final public Token getNextToken() {
 		if (token.next != null)
 			token = token.next;
 		else

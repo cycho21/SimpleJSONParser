@@ -8,4 +8,5 @@ public class Configuration {
 	public static final int IN_ARRAY = 2;
 	public static final int IN_VALUE = 3;
 	public static final int FINISHED = 4;
+	public static final int PASSING_THROUGH = 5;
 }

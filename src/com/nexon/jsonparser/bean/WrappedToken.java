@@ -1,6 +1,6 @@
 package com.nexon.jsonparser.bean;
 
-public class CToken {
+public class WrappedToken {
 	
 	/*
 	 * Declaration of tokens...
@@ -19,7 +19,7 @@ public class CToken {
 	private int type = INIT;
 	private Object val;
 	
-	public CToken(int type, Object value) {
+	public WrappedToken(int type, Object value) {
 		this.type = type;
 		this.val = value;
 	}
