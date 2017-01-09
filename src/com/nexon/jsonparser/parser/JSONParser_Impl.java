@@ -2,7 +2,6 @@ package com.nexon.jsonparser.parser;
 
 import java.io.FileNotFoundException;
 import java.io.FileReader;
-import java.util.ArrayDeque;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -72,7 +71,6 @@ public class JSONParser_Impl implements JSONParser {
 					
 				default:
 					status = Configuration.ERROR;
-					break;
 				}
 				break;
 			/*
@@ -90,8 +88,9 @@ public class JSONParser_Impl implements JSONParser {
 					break;
 					
 				case WrappedToken.PRIMITIVE_VALUE:
-					status = Configuration.PASSING_THROUGH; 
+					status = Configuration.PASSING_THROUGH;
 					String key = (String) token.getVal();
+					System.out.println(valStack.size());
 					valStack.addFirst(key);
 					statusStack.addFirst(status);
 					break;
@@ -134,7 +133,7 @@ public class JSONParser_Impl implements JSONParser {
 					statusStack.removeFirst();
 					Object temp = valStack.removeFirst();
 					key = (String) valStack.removeFirst();
-					parent = (Map<String, Object>) valStack.getFirst();
+					parent = (Map) valStack.getFirst();
 					List nArr = createArray();
 					parent.put(key, nArr);
 					status = Configuration.IN_ARRAY;
@@ -154,8 +153,8 @@ public class JSONParser_Impl implements JSONParser {
 					break;
 					
 				default:
-					break;
 				}
+				break;
 			/*
 			 * PASSING_THROUGH case end
 			 */
@@ -199,6 +198,7 @@ public class JSONParser_Impl implements JSONParser {
 				default:
 					break;
 				}
+				break;
 				
 			default:
 				break;
