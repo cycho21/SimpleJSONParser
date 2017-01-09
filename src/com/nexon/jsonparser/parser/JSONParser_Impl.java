@@ -207,6 +207,7 @@ public class JSONParser_Impl implements JSONParser {
 		} while (token.getType() != WrappedToken.EOF && token != null);
 
 		System.out.println("TEST PRINT : " + valStack);
+		System.out.println("JSONParser ended...");
 	}
 
 	@Override

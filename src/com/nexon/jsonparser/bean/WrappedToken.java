@@ -22,7 +22,6 @@ public class WrappedToken {
 	
 	
 	public WrappedToken() {
-		super();
 	}
 
 	public WrappedToken(int type, Object value) {

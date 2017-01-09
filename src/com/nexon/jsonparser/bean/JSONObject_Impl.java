@@ -2,7 +2,6 @@ package com.nexon.jsonparser.bean;
 
 import java.util.HashMap;
 
-import com.nexon.jsonparser.interfaces.JSONArray;
 import com.nexon.jsonparser.interfaces.JSONObject;
 
 public class JSONObject_Impl extends HashMap<String, Object> implements JSONObject {
@@ -13,13 +12,8 @@ public class JSONObject_Impl extends HashMap<String, Object> implements JSONObje
 	}
 
 	@Override
-	public JSONObject getJSONObject() {
-		return null;
-	}
-
-	@Override
-	public JSONArray getJSONArray() {
-		return null;
+	public void print() {
+		
 	}
 
 }
