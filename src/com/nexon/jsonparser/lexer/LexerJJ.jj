@@ -4,7 +4,7 @@ options
 }
 
 PARSER_BEGIN(LexerJJ)
-package com.nexon.jsonparser.jj;
+package com.nexon.jsonparser.lexer;
 
 public class LexerJJ
 {

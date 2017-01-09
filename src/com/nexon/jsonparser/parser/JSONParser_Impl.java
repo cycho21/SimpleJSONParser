@@ -12,8 +12,8 @@ import com.nexon.jsonparser.bean.WrappedToken;
 import com.nexon.jsonparser.conf.Configuration;
 import com.nexon.jsonparser.divide.Divisor;
 import com.nexon.jsonparser.interfaces.JSONParser;
-import com.nexon.jsonparser.jj.LexerJJ;
-import com.nexon.jsonparser.jj.Token;
+import com.nexon.jsonparser.lexer.LexerJJ;
+import com.nexon.jsonparser.lexer.Token;
 
 public class JSONParser_Impl implements JSONParser {
 
@@ -40,9 +40,9 @@ public class JSONParser_Impl implements JSONParser {
 		do {
 			nextToken();
 			
-			System.out.println(token.getVal() + " : " + token.getType());
-			System.out.println(status);
-			System.out.println("-------------------");
+//			System.out.println(token.getVal() + " : " + token.getType());
+//			System.out.println(status);
+//			System.out.println("-------------------");
 			
 			switch (status) {
 			/*
@@ -90,7 +90,6 @@ public class JSONParser_Impl implements JSONParser {
 				case WrappedToken.PRIMITIVE_VALUE:
 					status = Configuration.PASSING_THROUGH;
 					String key = (String) token.getVal();
-					System.out.println(valStack.size());
 					valStack.addFirst(key);
 					statusStack.addFirst(status);
 					break;
@@ -106,8 +105,8 @@ public class JSONParser_Impl implements JSONParser {
 					break;
 					
 				default:
-					break;
 				}
+				break;
 			/*
 			 * IN_OBJECT case end 
 			 */
@@ -131,7 +130,6 @@ public class JSONParser_Impl implements JSONParser {
 					
 				case WrappedToken.LEFT_SQUARE:
 					statusStack.removeFirst();
-					Object temp = valStack.removeFirst();
 					key = (String) valStack.removeFirst();
 					parent = (Map) valStack.getFirst();
 					List nArr = createArray();
@@ -205,6 +203,7 @@ public class JSONParser_Impl implements JSONParser {
 			}
 		} while (token.getType() != WrappedToken.EOF && token != null);
 		
+		System.out.println("TEST PRINT : " + valStack);
 	}
 
 	private List<?> createArray() {

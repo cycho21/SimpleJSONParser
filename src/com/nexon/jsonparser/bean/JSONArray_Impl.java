@@ -10,6 +10,4 @@ public class JSONArray_Impl extends ArrayList<Object> implements List<Object> {
 	 */
 	private static final long serialVersionUID = 1L;
 
-	
-	
 }
