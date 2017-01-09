@@ -1,0 +1,59 @@
+options
+{
+  IGNORE_CASE = true;
+}
+
+PARSER_BEGIN(LexerJJ)
+package com.nexon.jsonparser.jj;
+
+public class LexerJJ
+{
+}
+
+PARSER_END(LexerJJ)
+
+SKIP :
+{
+  " "
+| "\t"
+| "\n"
+| "\r"
+| < "rem" (~[ "\n", "\r" ])*
+    (
+      "\n"
+    | "\r"
+    | "\r\n"
+    ) >
+}
+
+TOKEN :
+{
+  < INTEGER_CONSTANT : (< DIGIT >)+ >
+  | < LOGIC_CONSTANT :"true"
+  | "false"
+  | "-1" >
+| < #DIGIT : [ "0"-"9" ] >
+}
+
+TOKEN :
+{
+  < COMMA : "," >
+| < COLON : ":" >
+| < LEFT_BRACE : "{" >
+| < RIGHT_BRACE : "}" >
+| < LEFT_SQUARE : "[" >
+| < RIGHT_SQUARE : "]" >
+| < QUOTE : "\"" >
+}
+
+TOKEN :
+{
+  < IDENTIFIER :
+    < LETTER >
+    (
+      < LETTER >
+    | < DIGIT >
+    )*
+    ([ "$" ])? >
+| < #LETTER : ([ "a"-"z", "A"-"Z" ])+ >
+}
