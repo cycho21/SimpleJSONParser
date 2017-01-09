@@ -197,7 +197,9 @@ public class JSONParser_Impl implements JSONParser {
 				default:
 				}
 				break;
-
+			/*
+			 * IN_ARRAY case end
+			 */
 			default:
 				break;
 			}
