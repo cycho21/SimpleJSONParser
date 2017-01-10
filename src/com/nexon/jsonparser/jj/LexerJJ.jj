@@ -37,6 +37,11 @@ TOKEN :
 
 TOKEN :
 {
+< PLUS : "+"> | < MINUS : "-"> | < MULTIPLY : "*" > | < DIVIDE : "/" >
+}
+
+TOKEN :
+{
   < COMMA : "," >
 | < COLON : ":" >
 | < LEFT_BRACE : "{" >
