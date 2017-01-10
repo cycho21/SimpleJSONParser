@@ -19,6 +19,11 @@ public class WrappedToken {
 	private int type = INIT;
 	private Object val;
 	
+	
+	
+	public WrappedToken() {
+	}
+
 	public WrappedToken(int type, Object value) {
 		this.type = type;
 		this.val = value;

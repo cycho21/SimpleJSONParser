@@ -12,13 +12,8 @@ public class App {
 	private void init() {
 		JSONParser_Impl jsonPasrer = new JSONParser_Impl();
 		jsonPasrer.init();
-		jsonPasrer.setSource("C:\\Users\\chan8\\Desktop\\test.json");
+		jsonPasrer.setSource("C:\\a\\test.json");
 		jsonPasrer.parse();
 	}
-	
-	
-	
-	
-	
 	
 }

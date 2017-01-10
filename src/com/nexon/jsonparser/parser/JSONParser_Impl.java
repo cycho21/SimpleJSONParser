@@ -12,8 +12,8 @@ import com.nexon.jsonparser.bean.WrappedToken;
 import com.nexon.jsonparser.conf.Configuration;
 import com.nexon.jsonparser.divide.Divisor;
 import com.nexon.jsonparser.interfaces.JSONParser;
-import com.nexon.jsonparser.jj.LexerJJ;
-import com.nexon.jsonparser.jj.Token;
+import com.nexon.jsonparser.lexer.LexerJJ;
+import com.nexon.jsonparser.lexer.Token;
 
 public class JSONParser_Impl implements JSONParser {
 
@@ -24,33 +24,27 @@ public class JSONParser_Impl implements JSONParser {
 
 	public JSONParser_Impl() {
 	}
-	
-	public int peekStatus(LinkedList<Integer> statusStack) {
-		if (statusStack.size() == 0) return -1;
-		else return statusStack.getFirst();
-	}
-	
+
+	@SuppressWarnings("unchecked")
 	@Override
 	public void parse() {
 		LinkedList<Integer> statusStack = new LinkedList<Integer>();
 		LinkedList<Object> valStack = new LinkedList<Object>();
-		
-		token = new WrappedToken(-3, null);
-		
+
+		token = new WrappedToken();
+
 		do {
 			nextToken();
-			
-			System.out.println(token.getVal() + " : " + token.getType());
-			System.out.println(status);
-			System.out.println("-------------------");
-			
+
+			System.out.println(token.getVal() + " : " + token.getType() + " Status : " + status);
+
 			switch (status) {
 			/*
 			 * INIT case start
 			 */
 			case Configuration.INIT:
 				switch (token.getType()) {
-				
+
 				case WrappedToken.PRIMITIVE_VALUE:
 					status = Configuration.FINISHED;
 					statusStack.addFirst(status);
@@ -62,13 +56,13 @@ public class JSONParser_Impl implements JSONParser {
 					statusStack.addFirst(status);
 					valStack.addFirst(createMapObject());
 					break;
-				
+
 				case WrappedToken.LEFT_SQUARE:
 					status = Configuration.IN_ARRAY;
 					statusStack.addFirst(status);
 					valStack.addFirst(createArray());
 					break;
-					
+
 				default:
 					status = Configuration.ERROR;
 				}
@@ -76,25 +70,26 @@ public class JSONParser_Impl implements JSONParser {
 			/*
 			 * INIT case end
 			 */
-				
-				
+
 			/*
-			 * IN_OBJECT case start 
+			 * IN_OBJECT case start
 			 */
 			case Configuration.IN_OBJECT:
 				switch (token.getType()) {
-				
+
+				case WrappedToken.QUOTE:
+					break;
+
 				case WrappedToken.COMMA: // Do nothing
 					break;
-					
+
 				case WrappedToken.PRIMITIVE_VALUE:
-					status = Configuration.PASSING_THROUGH;
 					String key = (String) token.getVal();
-					System.out.println(valStack.size());
 					valStack.addFirst(key);
 					statusStack.addFirst(status);
+					status = Configuration.PASSING_THROUGH;
 					break;
-					
+
 				case WrappedToken.RIGHT_BRACE:
 					if (valStack.size() > 1) {
 						statusStack.removeFirst();
@@ -104,61 +99,61 @@ public class JSONParser_Impl implements JSONParser {
 						status = Configuration.FINISHED;
 					}
 					break;
-					
+
 				default:
-					break;
 				}
+				break;
 			/*
-			 * IN_OBJECT case end 
+			 * IN_OBJECT case end
 			 */
-				
+
 			/*
 			 * PASSING_THROUGH case start
 			 */
 			case Configuration.PASSING_THROUGH:
 				switch (token.getType()) {
-				
+
 				case WrappedToken.COLON:
 					break;
-					
+
 				case WrappedToken.PRIMITIVE_VALUE:
 					statusStack.removeFirst();
 					String key = (String) valStack.removeFirst();
-					Map<String, Object> parent = (Map) valStack.getFirst();
+					Map<String, Object> parent = (Map<String, Object>) valStack.getFirst();
 					parent.put(key, token.getVal());
 					status = statusStack.peekFirst();
 					break;
-					
+
 				case WrappedToken.LEFT_SQUARE:
 					statusStack.removeFirst();
-					Object temp = valStack.removeFirst();
 					key = (String) valStack.removeFirst();
-					parent = (Map) valStack.getFirst();
-					List nArr = createArray();
+					System.out.println(valStack);
+					parent = (Map<String, Object>) valStack.getFirst();
+					List<Object> nArr = createArray();
 					parent.put(key, nArr);
 					status = Configuration.IN_ARRAY;
 					statusStack.addFirst(status);
 					valStack.addFirst(nArr);
 					break;
-					
+
 				case WrappedToken.LEFT_BRACE:
 					statusStack.removeFirst();
 					key = (String) valStack.removeFirst();
 					parent = (Map<String, Object>) valStack.getFirst();
-					Map nObj = createMapObject();
+					Map<String, Object> nObj = createMapObject();
 					parent.put(key, nObj);
 					status = Configuration.IN_OBJECT;
 					statusStack.addFirst(status);
 					valStack.addFirst(nObj);
 					break;
-					
+
 				default:
 				}
 				break;
 			/*
 			 * PASSING_THROUGH case end
 			 */
-				
+
 			/*
 			 * IN_ARRAY case start
 			 */
@@ -169,46 +164,52 @@ public class JSONParser_Impl implements JSONParser {
 					break;
 
 				case WrappedToken.PRIMITIVE_VALUE:
-					List val = (List) valStack.getFirst();
+					List<Object> val = (List<Object>) valStack.getFirst();
 					val.add(token.getVal());
 					break;
-					
+
 				case WrappedToken.RIGHT_SQUARE:
-					status = Configuration.FINISHED;
+					if (valStack.size() > 1) {
+						statusStack.removeFirst();
+						valStack.removeFirst();
+						status = peekStatus(statusStack);
+					}
 					break;
-					
+
 				case WrappedToken.LEFT_BRACE:
-					val = (List) valStack.getFirst();
+					val = (List<Object>) valStack.getFirst();
 					Map<String, Object> nObj = createMapObject();
 					val.add(nObj);
 					status = Configuration.IN_OBJECT;
 					statusStack.addFirst(status);
 					valStack.addFirst(nObj);
 					break;
-					
+
 				case WrappedToken.LEFT_SQUARE:
-					val = (List) valStack.getFirst();
-					List nArr = createArray();
+					val = (List<Object>) valStack.getFirst();
+					List<Object> nArr = createArray();
 					val.add(nArr);
 					status = Configuration.IN_ARRAY;
 					statusStack.addFirst(status);
 					valStack.addFirst(nArr);
 					break;
-					
+
 				default:
-					break;
 				}
 				break;
-				
+			/*
+			 * IN_ARRAY case end
+			 */
 			default:
 				break;
 			}
-		} while (token.getType() != WrappedToken.EOF && token != null);
-		
-	}
 
-	private List<?> createArray() {
-		return new JSONArray_Impl();
+			System.out.println(valStack);
+			System.out.println("-------------------");
+		} while (token.getType() != WrappedToken.EOF && token != null);
+
+		System.out.println("TEST PRINT : " + valStack);
+		System.out.println("JSONParser ended...");
 	}
 
 	@Override
@@ -237,9 +238,23 @@ public class JSONParser_Impl implements JSONParser {
 			token.setType(WrappedToken.EOF);
 		}
 	}
-	
-	private Map<String, Object> createMapObject() {
+
+	@Override
+	public List<Object> createArray() {
+		return new JSONArray_Impl();
+	}
+
+	@Override
+	public Map<String, Object> createMapObject() {
 		return new JSONObject_Impl();
+	}
+
+	@Override
+	public int peekStatus(LinkedList<Integer> statusStack) {
+		if (statusStack.size() == 0)
+			return -1;
+		else
+			return statusStack.getFirst();
 	}
 
 }
